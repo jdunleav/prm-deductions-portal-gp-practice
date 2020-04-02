@@ -1,3 +1,0 @@
-const NHSIdentitySandpitLogInUrl = process.env.REACT_APP_GP_PORTAL_IDENTITY_URL
-
-export default NHSIdentitySandpitLogInUrl

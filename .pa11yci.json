@@ -1,0 +1,15 @@
+{
+  "standard": "WCAG2AAA",
+  "level": "warning",
+  "defaults": {
+    "timeout": 10000,
+    "threshold": 1,
+    "chromeLaunchConfig": {
+      "args": ["--no-sandbox"]
+    }
+  },
+  "urls": [
+    "http://127.0.0.1:5000/home",
+    "http://127.0.0.1:5000/status"
+  ]
+}

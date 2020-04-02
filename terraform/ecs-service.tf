@@ -1,8 +1,7 @@
 locals {
-  ecs_cluster_id    = data.terraform_remote_state.prm-deductions-infra.outputs.deductions_public_ecs_cluster_id
-  ecs_tasks_sg_id   = data.terraform_remote_state.prm-deductions-infra.outputs.deductions_public_ecs_tasks_sg_id
-  private_subnets   = data.terraform_remote_state.prm-deductions-infra.outputs.deductions_public_private_subnets
-  alb_tg_arn        = data.terraform_remote_state.prm-deductions-infra.outputs.deductions_public_alb_tg_arn
+  ecs_cluster_id    = data.aws_ssm_parameter.deductions_public_ecs_cluster_id.value
+  ecs_tasks_sg_id   = data.aws_ssm_parameter.deductions_public_gp_portal_sg_id.value
+  private_subnets   = split(",", data.aws_ssm_parameter.deductions_public_private_subnets.value)
 }
 
 resource "aws_ecs_service" "ecs-service" {
@@ -18,8 +17,12 @@ resource "aws_ecs_service" "ecs-service" {
   }
 
   load_balancer {
-    target_group_arn = local.alb_tg_arn
+    target_group_arn = aws_alb_target_group.alb-tg.arn
     container_name   = var.service_container_name
     container_port   = var.service_container_port
   }
+
+  depends_on = [aws_alb_target_group.alb-tg, 
+                    aws_alb_listener.alb-listener-https, 
+                    aws_alb_listener_rule.alb-listener-rule]
 }
